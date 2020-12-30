@@ -3,6 +3,9 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Prewk\XmlStringStreamer;
+use Prewk\XmlStringStreamer\Stream;
+use Prewk\XmlStringStreamer\Parser;
 
 class DailyDumpParse extends Command
 {
@@ -37,6 +40,11 @@ class DailyDumpParse extends Command
      */
     public function handle()
     {
-        //
+        /*
+        * Use xml-string-streamer to iterate through <nation> entries
+        * Check if nation entry exists in database
+        * If yes, update entry
+        * If no, create new entry
+        */
     }
 }

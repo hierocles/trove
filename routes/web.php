@@ -21,14 +21,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('nation', ['uses' => 'NationsController@showRequirement']);
     $router->get('nation/{name}', ['uses' => 'NationsController@showFullNation']);
     $router->get('nation/{name}/{attr}', ['uses' => 'NationsController@showSingleAttribute']);
-    $router->post('nation', ['uses' => 'NationsController@create']);
-    $router->put('nation/{name}', ['uses' => 'NationsController@update']);
-    $router->delete('nation/{name}', ['uses' => 'NationsController@delete']);
-
     $router->get('region', ['uses' => 'RegionsController@showRequirement']);
     $router->get('region/{name}', ['uses' => 'RegionsController@showFullRegion']);
     $router->get('regions/{name}/{attr}', ['uses' => 'RegionsController@showSingleAttribute']);
-    $router->post('region', ['uses' => 'RegionsController@create']);
-    $router->put('region/{name}', ['uses' => 'RegionsController@update']);
-    $router->delete('region/{name}', ['uses' => 'RegionsController@delete']);
 });
