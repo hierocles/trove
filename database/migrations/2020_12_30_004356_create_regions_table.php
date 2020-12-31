@@ -17,7 +17,7 @@ class CreateRegionsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name');
-            $table->string('factbook');
+            $table->text('factbook');
             $table->integer('numnations');
             $table->text('nations');
             $table->string('delegate');
@@ -25,10 +25,10 @@ class CreateRegionsTable extends Migration
             $table->string('delegateauth');
             $table->string('founder');
             $table->string('founderauth');
-            $table->string('officers');
+            $table->text('officers');
             $table->string('power');
             $table->string('flag');
-            $table->string('embassies');
+            $table->text('embassies');
             $table->integer('lastupdate');
         });
     }

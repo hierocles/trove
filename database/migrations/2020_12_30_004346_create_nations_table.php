@@ -24,7 +24,7 @@ class CreateNationsTable extends Migration
             $table->string('unstatus');
             $table->text('endorsements');
             $table->integer('issues_answered');
-            $table->string('freedom');
+            $table->text('freedom');
             $table->string('region');
             $table->integer('population');
             $table->integer('tax');
@@ -36,15 +36,15 @@ class CreateNationsTable extends Migration
             $table->string('flag');
             $table->string('majorindustry');
             $table->string('govtpriority');
-            $table->string('govt');
+            $table->text('govt');
             $table->string('founded');
             $table->integer('firstlogin');
             $table->integer('lastlogin');
             $table->integer('lastactivity');
             $table->string('influence');
-            $table->string('freedomscores');
+            $table->text('freedomscores');
             $table->string('publicsector');
-            $table->string('deaths');
+            $table->text('deaths');
             $table->string('leader');
             $table->string('capital');
             $table->string('religion');

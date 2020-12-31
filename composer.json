@@ -20,7 +20,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Http/Helpers/JsonSerializer.php"
+        ]
     },
     "autoload-dev": {
         "classmap": [
