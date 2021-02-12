@@ -6,8 +6,6 @@ use Illuminate\Console\Command;
 use Prewk\XmlStringStreamer;
 use Prewk\XmlStringStreamer\Stream;
 use Prewk\XmlStringStreamer\Parser;
-use App\Models\Nations;
-use App\Models\Regions;
 use JsonSerializer\JsonSimpleXMLElementDecorator;
 
 class DailyDumpParse extends Command
@@ -45,7 +43,15 @@ class DailyDumpParse extends Command
     {
         $start = microtime(true);
         $nations_xml_file = base_path() . '/dumps/nations.xml';
+        $nations_csv_file = base_path() . '/dumps/nations.csv';
         $regions_xml_file = base_path() . '/dumps/regions.xml';
+        $regions_csv_file = base_path() . '/dumps/regions.csv';
+
+        $nations_table = with(new \App\Models\Nations)->getTable();
+        $regions_table = with(new \App\Models\Regions)->getTable();
+
+        // Let's count entries
+        $i = 0;
 
         // Process nations.xml
         $stream = new Stream\File($nations_xml_file, 16384);
@@ -53,56 +59,63 @@ class DailyDumpParse extends Command
         $streamer = new XmlStringStreamer($parser, $stream);
 
         while ($node = $streamer->getNode()) {
-            $simple_xml_node = simplexml_load_string($node);
+            $xml = simplexml_load_string($node);
 
             // Convert nodes with children to JSON objects with attributes
-            $freedom = new JsonSimpleXMLElementDecorator($simple_xml_node->FREEDOM);
-            $govt = new JsonSimpleXMLElementDecorator($simple_xml_node->GOVT);
-            $deaths = new JsonSimpleXMLElementDecorator($simple_xml_node->DEATHS);
-            $freedomscores = new JsonSimpleXMLElementDecorator($simple_xml_node->FREEDOMSCORES);
+            $freedom = new JsonSimpleXMLElementDecorator($xml->FREEDOM);
+            $govt = new JsonSimpleXMLElementDecorator($xml->GOVT);
+            $deaths = new JsonSimpleXMLElementDecorator($xml->DEATHS);
+            $freedomscores = new JsonSimpleXMLElementDecorator($xml->FREEDOMSCORES);
 
-            $nation = Nations::updateOrCreate(
-                ['name' => (string)$simple_xml_node->NAME],
-                [
-                    'name' => (string)$simple_xml_node->NAME,
-                    'type' => (string)$simple_xml_node->TYPE,
-                    'fullname' => (string)$simple_xml_node->FULLNAME,
-                    'motto' => (string)$simple_xml_node->MOTTO,
-                    'category' => (string)$simple_xml_node->CATEGORY,
-                    'unstatus' => (string)$simple_xml_node->UNSTATUS,
-                    'endorsements' => (string)$simple_xml_node->ENDORSEMENTS,
-                    'issues_answered' => (int)$simple_xml_node->ISSUES_ANSWERED,
-                    'freedom' => json_encode($freedom, JSON_NUMERIC_CHECK),
-                    'region' => (string)$simple_xml_node->REGION,
-                    'population' => (int)$simple_xml_node->POPULATION,
-                    'tax' => (int)$simple_xml_node->TAX,
-                    'animal' => (string)$simple_xml_node->ANIMAL,
-                    'currency' => (string)$simple_xml_node->CURRENCY,
-                    'demonym' => (string)$simple_xml_node->DEMONYM,
-                    'demonym2' => (string)$simple_xml_node->DEMONYM2,
-                    'demonym2plural' => (string)$simple_xml_node->DEMONYM2PLURAL,
-                    'flag' => (string)$simple_xml_node->FLAG,
-                    'majorindustry' => (string)$simple_xml_node->MAJORINDUSTRY,
-                    'govtpriority' => (string)$simple_xml_node->GOVTPRIORITY,
-                    'govt' => json_encode($govt, JSON_NUMERIC_CHECK),
-                    'founded' => (string)$simple_xml_node->FOUNDED,
-                    'firstlogin' => (int)$simple_xml_node->FIRSTLOGIN,
-                    'lastlogin' => (int)$simple_xml_node->LASTLOGIN,
-                    'lastactivity' => (int)$simple_xml_node->LASTACTIVITY,
-                    'influence' => (string)$simple_xml_node->INFLUENCE,
-                    'freedomscores' => json_encode($freedomscores, JSON_NUMERIC_CHECK),
-                    'publicsector' => (string)$simple_xml_node->PUBLICSECTOR,
-                    'deaths' => json_encode($deaths, JSON_NUMERIC_CHECK),
-                    'leader' => (string)$simple_xml_node->LEADER,
-                    'capital' => (string)$simple_xml_node->CAPITAL,
-                    'religion' => (string)$simple_xml_node->RELIGION,
-                    'factbooks' => (string)$simple_xml_node->FACTBOOKS,
-                    'dispatches' => (string)$simple_xml_node->DISPATCHES,
-                    'dbid' => (int)$simple_xml_node->DBID
-                ]
-            );
-            $this->info('Processed nation: ' . $nation->name);
+            // First field set as NULL for auto-incrementing ID
+            $nation_array = [
+                null,
+                (string)$xml->NAME,
+                (string)$xml->TYPE,
+                (string)$xml->FULLNAME,
+                (string)$xml->MOTTO,
+                (string)$xml->CATEGORY,
+                (string)$xml->UNSTATUS,
+                (string)$xml->ENDORSEMENTS,
+                (int)$xml->ISSUES_ANSWERED,
+                json_encode($freedom, JSON_NUMERIC_CHECK),
+                (string)$xml->REGION,
+                (int)$xml->POPULATION,
+                (int)$xml->TAX,
+                (string)$xml->ANIMAL,
+                (string)$xml->CURRENCY,
+                (string)$xml->DEMONYM,
+                (string)$xml->DEMONYM2,
+                (string)$xml->DEMONYM2PLURAL,
+                (string)$xml->FLAG,
+                (string)$xml->MAJORINDUSTRY,
+                (string)$xml->GOVTPRIORITY,
+                json_encode($govt, JSON_NUMERIC_CHECK),
+                (string)$xml->FOUNDED,
+                (int)$xml->FIRSTLOGIN,
+                (int)$xml->LASTLOGIN,
+                (int)$xml->LASTACTIVITY,
+                (string)$xml->INFLUENCE,
+                json_encode($freedomscores, JSON_NUMERIC_CHECK),
+                (string)$xml->PUBLICSECTOR,
+                json_encode($deaths, JSON_NUMERIC_CHECK),
+                (string)$xml->LEADER,
+                (string)$xml->CAPITAL,
+                (string)$xml->RELIGION,
+                (string)$xml->FACTBOOKS,
+                (string)$xml->DISPATCHES,
+                (int)$xml->DBID
+            ];
+
+            $handler = fopen($nations_csv_file, 'a');
+            fputcsv($handler, $nation_array);
+            fclose($handler);
+            $i++;
         }
+
+        $this->info('Processed ' . $i . ' nation entries.');
+
+        $i = 0;
 
         // Process regions.xml
         $stream = new Stream\File($regions_xml_file, 16384);
@@ -110,39 +123,63 @@ class DailyDumpParse extends Command
         $streamer = new XmlStringStreamer($parser, $stream);
 
         while ($node = $streamer->getNode()) {
-            $simple_xml_node = simplexml_load_string($node);
+            $xml = simplexml_load_string($node);
 
             // Convert nodes with children to JSON objects with attributes
-            $officers = new JsonSimpleXMLElementDecorator($simple_xml_node->OFFICERS);
-            $embassies = new JsonSimpleXMLElementDecorator($simple_xml_node->EMBASSIES);
+            $officers = new JsonSimpleXMLElementDecorator($xml->OFFICERS);
+            $embassies = new JsonSimpleXMLElementDecorator($xml->EMBASSIES);
 
             // Convert nations node to JSON string
-            $nations_json = json_encode(explode(':', (string)$simple_xml_node->NATIONS));
+            $nations_json = json_encode(explode(':', (string)$xml->NATIONS));
 
-            $region = Regions::updateOrCreate(
-                ['name' => $simple_xml_node->NAME],
-                [
-                    'name' => (string)$simple_xml_node->NAME,
-                    'factbook' => (string)$simple_xml_node->FACTBOOK,
-                    'numnations' => (int)$simple_xml_node->NUMNATIONS,
-                    'nations' => $nations_json,
-                    'delegate' => (string)$simple_xml_node->DELEGATE,
-                    'delegatevotes' => (int)$simple_xml_node->DELEGATEVOTES,
-                    'delegateauth' => (string)$simple_xml_node->DELEGATEAUTH,
-                    'founder' => (string)$simple_xml_node->FOUNDER,
-                    'founderauth' => (string)$simple_xml_node->FOUNDERAUTH,
-                    'officers' => json_encode($officers),
-                    'power' => (string)$simple_xml_node->POWER,
-                    'flag' => (string)$simple_xml_node->FLAG,
-                    'embassies' => json_encode($embassies),
-                    'lastupdate' => (int)$simple_xml_node->LASTUPDATE
-                ]
-            );
-            $this->info('Processed region: ' . $region->name);
+            $region_array = [
+                null,
+                (string)$xml->NAME,
+                (string)$xml->FACTBOOK,
+                (int)$xml->NUMNATIONS,
+                (string)$nations_json,
+                (string)$xml->DELEGATE,
+                (int)$xml->DELEGATEVOTES,
+                (string)$xml->DELEGATEAUTH,
+                (string)$xml->FOUNDER,
+                (string)$xml->FOUNDERAUTH,
+                json_encode($officers),
+                (string)$xml->POWER,
+                (string)$xml->FLAG,
+                json_encode($embassies),
+                (int)$xml->LASTUPDATE
+            ];
+
+            $handler = fopen($regions_csv_file, 'a');
+            fputcsv($handler, $region_array);
+            fclose($handler);
+            $i++;
         }
+
+        $this->info('Processed ' . $i . ' region entries.');
+
+        $this->info('Inserting nations into database...');
+
+        $query = "LOAD DATA LOCAL INFILE '" . $nations_csv_file . "' INTO TABLE " . $nations_table . " FIELDS TERMINATED BY ',' ENCLOSED BY '\\\"' LINES TERMINATED BY '\\n' SET ID = NULL;";
+        $cmd = 'mysql --local-infile=1 -u ' . env('DB_USERNAME') . ' -p' . env('DB_PASSWORD') . ' ' . env('DB_DATABASE') . ' -e "' . $query . '"';
+        shell_exec($cmd);
+
+        $this->info('Done.');
+
+        $this->info('Inserting regions into database... ');
+
+        $query = "LOAD DATA LOCAL INFILE '" . $regions_csv_file . "' INTO TABLE " . $regions_table . " FIELDS TERMINATED BY ',' ENCLOSED BY '\\\"' LINES TERMINATED BY '\\n' SET ID = NULL;";
+        $cmd = 'mysql --local-infile=1 -u ' . env('DB_USERNAME') . ' -p' . env('DB_PASSWORD') . ' ' . env('DB_DATABASE') . ' -e "' . $query . '"';
+        shell_exec($cmd);
+
+        $this->info('Done.');
 
         $end = microtime(true);
         $time = number_format($end - $start, 2);
         $this->info('Finished in ' . $time . ' seconds.');
+
+        // We no longer need the CSV files
+        unlink($nations_csv_file);
+        unlink($regions_csv_file);
     }
 }

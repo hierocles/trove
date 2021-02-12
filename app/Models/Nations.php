@@ -8,4 +8,5 @@ class Nations extends Model
 {
     protected $table = 'nations';
     protected $guarded = [];
+    public $timestamps = false;
 }
