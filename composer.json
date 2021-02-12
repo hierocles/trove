@@ -1,7 +1,7 @@
 {
-    "name": "laravel/lumen",
-    "description": "The Laravel Lumen Framework.",
-    "keywords": ["framework", "laravel", "lumen"],
+    "name": "hierocles/trove",
+    "description": "Basic API based on NationStates daily XML dumps",
+    "keywords": ["nationstates", "api"],
     "license": "MIT",
     "type": "project",
     "require": {
