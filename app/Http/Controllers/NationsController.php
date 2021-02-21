@@ -146,11 +146,13 @@ class NationsController extends Controller
         return response()->json($endorsements_list);
     }
 
-    private function normalize($input) {
+    private function normalize($input)
+    {
         return str_replace(' ', '_', strtolower(urldecode($input)));
     }
 
-    private function returnJson($name, $attribute) {
+    private function returnJson($name, $attribute)
+    {
         $nation = Nations::where('apiname', $name)->firstOrFail();
 
         switch ($attribute) {
