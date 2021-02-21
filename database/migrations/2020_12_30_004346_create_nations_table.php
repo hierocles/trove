@@ -14,13 +14,16 @@ class CreateNationsTable extends Migration
     public function up()
     {
         Schema::create('nations', function (Blueprint $table) {
-            $table->increments('id');
             $table->string('name');
+            $table->primary('name');
+            $table->string('apiname');
+            $table->index('apiname');
             $table->string('type');
             $table->string('fullname');
             $table->string('motto');
             $table->string('category');
             $table->string('unstatus');
+            $table->index('unstatus');
             $table->text('endorsements');
             $table->integer('issues_answered');
             $table->text('freedom');

@@ -41,14 +41,16 @@ class DailyDumpParse extends Command
      */
     public function handle()
     {
+        $this->info('Processing nations XML (this will take a few minutes)...');
+
         $start = microtime(true);
         $nations_xml_file = base_path() . '/dumps/nations.xml';
         $nations_csv_file = base_path() . '/dumps/nations.csv';
         $regions_xml_file = base_path() . '/dumps/regions.xml';
         $regions_csv_file = base_path() . '/dumps/regions.csv';
 
-        $nations_table = with(new \App\Models\Nations)->getTable();
-        $regions_table = with(new \App\Models\Regions)->getTable();
+        $nations_table = with(new \App\Models\Nations())->getTable();
+        $regions_table = with(new \App\Models\Regions())->getTable();
 
         // Let's count entries
         $i = 0;
@@ -67,10 +69,11 @@ class DailyDumpParse extends Command
             $deaths = new JsonSimpleXMLElementDecorator($xml->DEATHS);
             $freedomscores = new JsonSimpleXMLElementDecorator($xml->FREEDOMSCORES);
 
-            // First field set as NULL for auto-incrementing ID
+            $apiname = str_replace(' ', '_', strtolower($xml->NAME));
+
             $nation_array = [
-                null,
                 (string)$xml->NAME,
+                (string)$apiname,
                 (string)$xml->TYPE,
                 (string)$xml->FULLNAME,
                 (string)$xml->MOTTO,
@@ -113,7 +116,7 @@ class DailyDumpParse extends Command
             $i++;
         }
 
-        $this->info('Processed ' . $i . ' nation entries.');
+        $this->info('Processed ' . $i . ' nation entries. Processing regions XML (this will take a few minutes)...');
 
         $i = 0;
 
@@ -129,15 +132,17 @@ class DailyDumpParse extends Command
             $officers = new JsonSimpleXMLElementDecorator($xml->OFFICERS);
             $embassies = new JsonSimpleXMLElementDecorator($xml->EMBASSIES);
 
-            // Convert nations node to JSON string
-            $nations_json = json_encode(explode(':', (string)$xml->NATIONS));
+            // Change the delimiter on the nations string. For some reason NS devs use a colon instead of a comma.
+            $nations = str_replace(':', ',', (string)$xml->NATIONS);
+
+            $apiname = str_replace(' ', '_', strtolower($xml->NAME));
 
             $region_array = [
-                null,
                 (string)$xml->NAME,
+                (string)$apiname,
                 (string)$xml->FACTBOOK,
                 (int)$xml->NUMNATIONS,
-                (string)$nations_json,
+                (string)$nations,
                 (string)$xml->DELEGATE,
                 (int)$xml->DELEGATEVOTES,
                 (string)$xml->DELEGATEAUTH,
@@ -160,7 +165,7 @@ class DailyDumpParse extends Command
 
         $this->info('Inserting nations into database...');
 
-        $query = "LOAD DATA LOCAL INFILE '" . $nations_csv_file . "' INTO TABLE " . $nations_table . " FIELDS TERMINATED BY ',' ENCLOSED BY '\\\"' LINES TERMINATED BY '\\n' SET ID = NULL;";
+        $query = "LOAD DATA LOCAL INFILE '" . $nations_csv_file . "' INTO TABLE " . $nations_table . " FIELDS TERMINATED BY ',' ENCLOSED BY '\\\"' LINES TERMINATED BY '\\n'";
         $cmd = 'mysql --local-infile=1 -u ' . env('DB_USERNAME') . ' -p' . env('DB_PASSWORD') . ' ' . env('DB_DATABASE') . ' -e "' . $query . '"';
         shell_exec($cmd);
 
@@ -168,7 +173,7 @@ class DailyDumpParse extends Command
 
         $this->info('Inserting regions into database... ');
 
-        $query = "LOAD DATA LOCAL INFILE '" . $regions_csv_file . "' INTO TABLE " . $regions_table . " FIELDS TERMINATED BY ',' ENCLOSED BY '\\\"' LINES TERMINATED BY '\\n' SET ID = NULL;";
+        $query = "LOAD DATA LOCAL INFILE '" . $regions_csv_file . "' INTO TABLE " . $regions_table . " FIELDS TERMINATED BY ',' ENCLOSED BY '\\\"' LINES TERMINATED BY '\\n'";
         $cmd = 'mysql --local-infile=1 -u ' . env('DB_USERNAME') . ' -p' . env('DB_PASSWORD') . ' ' . env('DB_DATABASE') . ' -e "' . $query . '"';
         shell_exec($cmd);
 
