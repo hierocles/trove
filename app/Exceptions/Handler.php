@@ -51,10 +51,10 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if ($exception instanceof NotFoundHttpException) {
-            return response()->json('Invalid route', 404);
+            return response()->json('Invalid route', 400);
         }
         if ($exception instanceof ModelNotFoundException) {
-            return response()->json(['error' => 'Not in database'], 400);
+            return response()->json(['error' => 'Not in database'], 404);
         }
         return parent::render($request, $exception);
     }

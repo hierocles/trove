@@ -74,9 +74,9 @@ class NationsController extends Controller
         // Return json message if attribute isn't in allowed list
         if (!in_array($attribute, $this->allowed_attributes)) {
             return response()->json([
-                'error' => 'Invalid attribute',
+                'error' => 'Supplied attribute not in allowed list',
                 'invalid' => $attribute
-            ], 400);
+            ], 403);
         } else {
             $return = $this->returnJson($name, $attribute);
             return response()->json($return);
@@ -95,7 +95,9 @@ class NationsController extends Controller
         }
 
         if (!property_exists($json, 'attributes')) {
-            return response()->json(['error' => 'No valid attributes key'], 400);
+            return response()->json([
+                'error' => 'No attributes supplied'
+            ], 400);
         }
 
         $attributes_list = explode(',', $json->attributes);
@@ -103,9 +105,9 @@ class NationsController extends Controller
         foreach ($attributes_list as $attribute) {
             if (!in_array($attribute, $this->allowed_attributes)) {
                 return response()->json([
-                    'error' => 'Invalid attribute',
+                    'error' => 'Supplied attribute not in allowed list',
                     'invalid' => $attribute
-                ], 400);
+                ], 403);
             } else {
                 $return[] = $this->returnJson($name, $attribute);
             }
@@ -122,19 +124,19 @@ class NationsController extends Controller
             ['apiname', '!=', $name]
         ];
         // Grab values for columns region,endorsements,apiname
-        $nation = Nations::where('apiname', $name)->first(['region', 'endorsements', 'unstatus']);
+        $nation = Nations::where('apiname', $name)->firstorFail(['region', 'endorsements', 'unstatus']);
 
         // Skip if not a WA member
         if ($nation->unstatus == 'Non-member') {
             return response()->json([
                 'error' => 'Not a WA member'
-            ]);
+            ], 400);
         }
 
         // Grab value for column nations
         $region = Regions::where('name', $nation->region)->first('nations');
         $region_nations_array = explode(',', $region->nations);
-        // Grab column values for name,endorsements for all WA members (incl Delegate)
+        // Grab column values for apiname,endorsements for all WA members (incl Delegate)
         $regions_wa_members = Nations::whereIn('apiname', $region_nations_array)
                                 ->where($search_query)->get(['apiname', 'endorsements']);
         // If target nation is not found in each endorsement list, add to returned list

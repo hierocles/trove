@@ -1,7 +1,7 @@
 <?php
 
 $router->get('/', function () use ($router) {
-    return $router->app->version();
+    return view('documentation');
 });
 
 $router->group(['prefix' => 'api'], function () use ($router) {
@@ -12,5 +12,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('endotart/{name}', ['uses' => 'NationsController@getEndotartList']);
     $router->get('region', ['uses' => 'RegionsController@index']);
     $router->get('region/{name}', ['uses' => 'RegionsController@getFullRegionRecord']);
-    $router->get('regions/{name}/{attribute}', ['uses' => 'RegionsController@getSingleAttribute']);
+    $router->get('region/{name}/{attribute}', ['uses' => 'RegionsController@getSingleAttribute']);
+    $router->get('region/{name}/multi/{attributes}', ['uses' => 'RegionsController@getMultipleAttributes']);
 });

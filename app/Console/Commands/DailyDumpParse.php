@@ -44,10 +44,10 @@ class DailyDumpParse extends Command
         $this->info('Processing nations XML (this will take a few minutes)...');
 
         $start = microtime(true);
-        $nations_xml_file = base_path() . '/dumps/nations.xml';
-        $nations_csv_file = base_path() . '/dumps/nations.csv';
-        $regions_xml_file = base_path() . '/dumps/regions.xml';
-        $regions_csv_file = base_path() . '/dumps/regions.csv';
+        $nations_xml_file = base_path() . '/storage/dumps/nations.xml';
+        $nations_csv_file = base_path() . '/storage/dumps/nations.csv';
+        $regions_xml_file = base_path() . '/storage/dumps/regions.xml';
+        $regions_csv_file = base_path() . '/storage/dumps/regions.csv';
 
         $nations_table = with(new \App\Models\Nations())->getTable();
         $regions_table = with(new \App\Models\Regions())->getTable();
@@ -128,11 +128,28 @@ class DailyDumpParse extends Command
         while ($node = $streamer->getNode()) {
             $xml = simplexml_load_string($node);
 
+            $officers = [];
+            $embassies = [];
             // Convert nodes with children to JSON objects with attributes
-            $officers = new JsonSimpleXMLElementDecorator($xml->OFFICERS);
-            $embassies = new JsonSimpleXMLElementDecorator($xml->EMBASSIES);
 
-            // Change the delimiter on the nations string. For some reason NS devs use a colon instead of a comma.
+            foreach ($xml->OFFICERS->OFFICER as $officer) {
+                $officers[] = [
+                    'officer' => [
+                        'nation' => (string)$officer->NATION,
+                        'office' => (string)$officer->OFFICE,
+                        'authority' => (string)$officer->AUTHORITY,
+                        'time' => (int)$officer->TIME,
+                        'by' => (string)$officer->BY,
+                        'order' => (int)$officer->ORDER
+                    ]
+                ];
+            }
+
+            foreach ($xml->EMBASSIES->EMBASSY as $embassy) {
+                 $embassies[] = new JsonSimpleXMLElementDecorator($embassy);
+            }
+
+            // Change the delimiter on the nations string for consistency
             $nations = str_replace(':', ',', (string)$xml->NATIONS);
 
             $apiname = str_replace(' ', '_', strtolower($xml->NAME));

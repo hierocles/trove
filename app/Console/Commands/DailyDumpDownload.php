@@ -40,15 +40,15 @@ class DailyDumpDownload extends Command
         $nations_uri = 'https://www.nationstates.net/pages/nations.xml.gz';
         $regions_uri = 'https://www.nationstates.net/pages/regions.xml.gz';
 
-        $nations_gzfile = base_path() . '/dumps/nations.xml.gz';
-        $nations_xmlfile = base_path() . '/dumps/nations.xml';
-        $regions_gzfile = base_path() . '/dumps/regions.xml.gz';
-        $regions_xmlfile = base_path() . '/dumps/regions.xml';
+        $nations_gzfile = base_path() . '/storage/dumps/nations.xml.gz';
+        $nations_xmlfile = base_path() . '/storage/dumps/nations.xml';
+        $regions_gzfile = base_path() . '/storage/dumps/regions.xml.gz';
+        $regions_xmlfile = base_path() . '/storage/dumps/regions.xml';
 
         $stream_opts = [
             'http' => [
                 'method' => 'GET',
-                'user_agent' => 'Glen-Rhodes - Daily Dump Downloader - dylan.hierocles@gmail.com'
+                'user_agent' => env('NS_USERAGENT')
             ]
         ];
         $stream_context = stream_context_create($stream_opts);
