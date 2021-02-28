@@ -462,7 +462,7 @@
 
 <p>The response will be in JSON format and will include either the full record or an error code.</p>
 <h3 id='http-request'>HTTP Request</h3>
-<p><code>GET https://trove.tspforums.xyz/api/nation/{nation}</code></p>
+<p><code>GET {{ url('') }}/api/nation/{nation}</code></p>
 <h2 id='get-an-individual-nation-attribute'>Get an individual nation attribute</h2><div class="highlight"><pre class="highlight php tab-php"><code><span class="nv">$curl</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">();</span>
 
 <span class="nb">curl_setopt_array</span><span class="p">(</span><span class="nv">$curl</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span>
@@ -498,7 +498,7 @@
    </span><span class="nl">"motto"</span><span class="p">:</span><span class="s2">"Read the docs."</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div><h3 id='http-request-2'>HTTP Request</h3>
-<p><code>GET https://trove.tspforums.xyz/api/nation/{nation}/{attribute}</code></p>
+<p><code>GET {{ url('') }}/api/nation/{nation}/{attribute}</code></p>
 <h3 id='allowed-attributes'>Allowed Attributes</h3>
 <p>The API will return a 403 HTTP error if a requested attribute is not one of the below:</p>
 
@@ -705,7 +705,7 @@
 
 <p><code>{&quot;attributes&quot;:&quot;attribute1,attribute2,attribute3&quot;}</code></p>
 <h3 id='http-request-3'>HTTP Request</h3>
-<p><code>GET https://trove.tspforums.xyz/api/nation/{nation}/multi/{attributes}</code></p>
+<p><code>GET {{ url('') }}/api/nation/{nation}/multi/{attributes}</code></p>
 <h2 id='get-an-endorsement-needed-list'>Get an endorsement-needed list</h2><div class="highlight"><pre class="highlight php tab-php"><code><span class="nv">$curl</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">();</span>
 
 <span class="nb">curl_setopt_array</span><span class="p">(</span><span class="nv">$curl</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span>
@@ -741,7 +741,7 @@
 </span></code></pre></div>
 <p>This endopoint returns a JSON nations in same region that the target nation has not yet endorsed.</p>
 <h3 id='http-request-4'>HTTP Request</h3>
-<p><code>GET https://trove.tspforums.xyz/api/endotart/{nation}</code></p>
+<p><code>GET {{ url('') }}/api/endotart/{nation}</code></p>
 <h1 id='regions'>Regions</h1><h2 id='get-a-full-region-record'>Get a full region record</h2><div class="highlight"><pre class="highlight php tab-php"><code><span class="nv">$curl</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">();</span>
 
 <span class="nb">curl_setopt_array</span><span class="p">(</span><span class="nv">$curl</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span>
@@ -825,7 +825,7 @@
 
 <p>The response will be in JSON format and will include either the full record or an error code.</p>
 <h3 id='http-request-5'>HTTP Request</h3>
-<p><code>GET https://trove.tspforums.xyz/api/region/{region}</code></p>
+<p><code>GET {{ url('') }}/api/region/{region}</code></p>
 <h2 id='get-an-individual-region-attribute'>Get an individual region attribute</h2><div class="highlight"><pre class="highlight php tab-php"><code><span class="nv">$curl</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">();</span>
 
 <span class="nb">curl_setopt_array</span><span class="p">(</span><span class="nv">$curl</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span>
@@ -861,7 +861,7 @@
    </span><span class="nl">"factbook"</span><span class="p">:</span><span class="s2">"Read the docs."</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div><h3 id='http-request-6'>HTTP Request</h3>
-<p><code>GET https://trove.tspforums.xyz/api/region/{region}/{attribute}</code></p>
+<p><code>GET {{ url('') }}/api/region/{region}/{attribute}</code></p>
 <h3 id='allowed-attributes-2'>Allowed Attributes</h3>
 <p>The API will return a 403 HTTP error if a requested attribute is not one of the below:</p>
 
@@ -998,7 +998,7 @@
 
 <p><code>{&quot;attributes&quot;:&quot;attribute1,attribute2,attribute3&quot;}</code></p>
 <h3 id='http-request-7'>HTTP Request</h3>
-<p><code>GET https://trove.tspforums.xyz/api/region/{region}/multi/{attributes}</code></p>
+<p><code>GET {{ url('') }}/api/region/{region}/multi/{attributes}</code></p>
 <h1 id='errors'>Errors</h1><div class="highlight"><pre class="highlight php tab-php"><code><span class="nv">$curl</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">();</span>
 
 <span class="nb">curl_setopt_array</span><span class="p">(</span><span class="nv">$curl</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span>
