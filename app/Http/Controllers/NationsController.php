@@ -109,7 +109,11 @@ class NationsController extends Controller
                     'invalid' => $attribute
                 ], 403);
             } else {
-                $return[] = $this->returnJson($name, $attribute);
+                if (in_array($attribute, ['freedom', 'govt', 'freedomscores', 'deaths'])) {
+                    $return[$attribute] = $this->returnJson($name, $attribute)->$attribute;
+                } else {
+                    $return[$attribute] = $this->returnJson($name, $attribute, true);
+                }
             }
         }
         return response()->json($return);
@@ -153,19 +157,24 @@ class NationsController extends Controller
         return str_replace(' ', '_', strtolower(urldecode($input)));
     }
 
-    private function returnJson($name, $attribute)
+    private function returnJson($name, $attribute, $value_only = false)
     {
         $nation = Nations::where('apiname', $name)->firstOrFail();
-
+        $return = [];
         switch ($attribute) {
             case 'freedom':
             case 'govt':
             case 'freedomscores':
             case 'deaths':
-                return json_decode($nation[$attribute]);
+                $return = json_decode($nation[$attribute]);
                 break;
             default:
-                return [$attribute => $nation[$attribute]];
+                if ($value_only) {
+                    $return = $nation[$attribute];
+                } else {
+                    $return[$attribute] = $nation[$attribute];
+                }
         }
+        return $return;
     }
 }

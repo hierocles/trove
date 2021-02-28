@@ -85,7 +85,7 @@ class RegionsController extends Controller
                     'invalid' => $attribute
                 ], 403);
             } else {
-                $return[] = $this->returnJson($name, $attribute);
+                $return[$attribute] = $this->returnJson($name, $attribute, true);
             }
         }
         return response()->json($return);
@@ -96,17 +96,22 @@ class RegionsController extends Controller
         return str_replace(' ', '_', strtolower(urldecode($input)));
     }
 
-    private function returnJson($name, $attribute)
+    private function returnJson($name, $attribute, $value_only = false)
     {
         $region = Regions::where('apiname', $name)->firstOrFail();
-
+        $return = [];
         switch ($attribute) {
             case 'officers':
             case 'embassies':
-                return [$attribute => json_decode($region[$attribute])];
+                $return = json_decode($region[$attribute]);
                 break;
             default:
-                return [$attribute => $region[$attribute]];
+                if ($value_only) {
+                    $return = $region[$attribute];
+                } else {
+                    $return[$attribute] = $region[$attribute];
+                }
         }
+        return $return;
     }
 }

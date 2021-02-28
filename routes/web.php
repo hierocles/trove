@@ -1,10 +1,13 @@
 <?php
 
-$router->get('/', function () use ($router) {
+$router->get('/', function () {
     return view('documentation');
 });
 
 $router->group(['prefix' => 'api'], function () use ($router) {
+    $router->get('/', function () {
+        return view('documentation');
+    });
     $router->get('nation', ['uses' => 'NationsController@index']);
     $router->get('nation/{name}', ['uses' => 'NationsController@getFullNationRecord']);
     $router->get('nation/{name}/{attribute}', ['uses' => 'NationsController@getSingleAttribute']);
