@@ -59,7 +59,7 @@ class NationsController extends Controller
         $nation = Nations::where('apiname', $name)->firstOrFail();
 
         // Convert json strings to objects, for better looking results
-        $nation->freedom = json_decode($nation->freedom);
+        $nation->freedom = json_decode($nation->freedom)->freedom;
         $nation->govt = json_decode($nation->govt)->govt;
         $nation->freedomscores = json_decode($nation->freedomscores)->freedomscores;
         $nation->deaths = json_decode($nation->deaths)->deaths;
