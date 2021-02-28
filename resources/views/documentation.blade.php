@@ -291,7 +291,7 @@
     </script>
   </head>
 
-  <body class="index" data-languages="[&quot;php&quot;,&quot;javascript&quot;]">
+  <body class="index" data-languages="['php','javascript']">
     <a href="#" id="nav-button">
       <span>
         <img src="{{ url('images/navbar-6ad8e2f4.svg') }}" alt="" />
