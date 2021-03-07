@@ -27,13 +27,14 @@ $app->singleton(
 );
 
 $app->configure('app');
+$app->configure('cors');
 
 $app->middleware([
-    'Nord\Lumen\Cors\CorsMiddleware',
+    Fruitcake\Cors\HandleCors::class,
 ]);
 
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
-$app->register('Nord\Lumen\Cors\CorsServiceProvider');
+$app->register(Fruitcake\Cors\CorsServiceProvider::class);
 
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
