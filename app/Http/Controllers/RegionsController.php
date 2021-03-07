@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\Nations;
 use App\Models\Regions;
+use App\Models\LastUpdate;
 
 class RegionsController extends Controller
 {
@@ -30,6 +31,12 @@ class RegionsController extends Controller
     public function index()
     {
         return response()->json(['error' => 'No input supplied'], 400);
+    }
+
+    public function lastUpdate()
+    {
+        $lastupdate = LastUpdate::where('type', 'region')->first();
+        return response()->json($lastupdate->updated_at);
     }
 
     public function getFullRegionRecord($name)

@@ -7,6 +7,7 @@ use Prewk\XmlStringStreamer;
 use Prewk\XmlStringStreamer\Stream;
 use Prewk\XmlStringStreamer\Parser;
 use JsonSerializer\JsonSimpleXMLElementDecorator;
+use App\Models\LastUpdate;
 
 class DailyDumpParse extends Command
 {
@@ -44,6 +45,7 @@ class DailyDumpParse extends Command
         $this->info('Processing nations XML (this will take a few minutes)...');
 
         $start = microtime(true);
+
         $nations_xml_file = base_path() . '/storage/dumps/nations.xml';
         $nations_csv_file = base_path() . '/storage/dumps/nations.csv';
         $regions_xml_file = base_path() . '/storage/dumps/regions.xml';
@@ -186,6 +188,8 @@ class DailyDumpParse extends Command
         $cmd = 'mysql --local-infile=1 -u ' . env('DB_USERNAME') . ' -p' . env('DB_PASSWORD') . ' ' . env('DB_DATABASE') . ' -e "' . $query . '"';
         shell_exec($cmd);
 
+        LastUpdate::where('type', 'nation')->update(['type' => 'nation']);
+
         $this->info('Done.');
 
         $this->info('Inserting regions into database... ');
@@ -194,7 +198,10 @@ class DailyDumpParse extends Command
         $cmd = 'mysql --local-infile=1 -u ' . env('DB_USERNAME') . ' -p' . env('DB_PASSWORD') . ' ' . env('DB_DATABASE') . ' -e "' . $query . '"';
         shell_exec($cmd);
 
+        LastUpdate::where('type', 'region')->update(['type' => 'region']);
+
         $this->info('Done.');
+
 
         $end = microtime(true);
         $time = number_format($end - $start, 2);

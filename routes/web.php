@@ -8,6 +8,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('/', function () {
         return view('documentation');
     });
+    $router->get('lastupdate/nation', ['uses' => 'NationsController@lastUpdate']);
+    $router->get('lastupdate/region', ['uses' => 'RegionsController@lastUpdate']);
     $router->get('nation', ['uses' => 'NationsController@index']);
     $router->get('nation/{name}', ['uses' => 'NationsController@getFullNationRecord']);
     $router->get('nation/{name}/{attribute}', ['uses' => 'NationsController@getSingleAttribute']);

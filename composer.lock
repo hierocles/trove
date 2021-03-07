@@ -2468,16 +2468,16 @@
         },
         {
             "name": "prewk/xml-string-streamer",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/prewk/xml-string-streamer.git",
-                "reference": "1449d07bbfe24800a2188d6e3fd68dfc6035d38e"
+                "reference": "8bfccd2b3e899858d3f4fa33123a8c3b0f721be0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/prewk/xml-string-streamer/zipball/1449d07bbfe24800a2188d6e3fd68dfc6035d38e",
-                "reference": "1449d07bbfe24800a2188d6e3fd68dfc6035d38e",
+                "url": "https://api.github.com/repos/prewk/xml-string-streamer/zipball/8bfccd2b3e899858d3f4fa33123a8c3b0f721be0",
+                "reference": "8bfccd2b3e899858d3f4fa33123a8c3b0f721be0",
                 "shasum": ""
             },
             "require": {
@@ -2508,9 +2508,9 @@
             "homepage": "https://github.com/prewk/xml-string-streamer",
             "support": {
                 "issues": "https://github.com/prewk/xml-string-streamer/issues",
-                "source": "https://github.com/prewk/xml-string-streamer/tree/1.0.0"
+                "source": "https://github.com/prewk/xml-string-streamer/tree/1.1.0"
             },
-            "time": "2020-12-14T18:57:30+00:00"
+            "time": "2021-03-07T16:34:57+00:00"
         },
         {
             "name": "psr/container",
