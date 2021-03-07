@@ -27,6 +27,7 @@
         "php": "^7.4|^8.0",
         "illuminate/database": "^8.24.0",
         "laravel/lumen-framework": "^8.0",
+        "nordsoftware/lumen-cors": "^3.4",
         "prewk/xml-string-streamer": "^1.0"
     },
     "require-dev": {
