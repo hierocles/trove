@@ -8,6 +8,8 @@ use Prewk\XmlStringStreamer\Stream;
 use Prewk\XmlStringStreamer\Parser;
 use JsonSerializer\JsonSimpleXMLElementDecorator;
 use App\Models\LastUpdate;
+use App\Models\Nations;
+use App\Models\Regions;
 
 class DailyDumpParse extends Command
 {
@@ -132,7 +134,6 @@ class DailyDumpParse extends Command
 
             $officers = [];
             $embassies = [];
-            // Convert nodes with children to JSON objects with attributes
 
             foreach ($xml->OFFICERS->OFFICER as $officer) {
                 $officers[] = [
@@ -147,6 +148,7 @@ class DailyDumpParse extends Command
                 ];
             }
 
+            // Convert XML entries with attributes to JSON elements
             foreach ($xml->EMBASSIES->EMBASSY as $embassy) {
                  $embassies[] = new JsonSimpleXMLElementDecorator($embassy);
             }
@@ -184,8 +186,14 @@ class DailyDumpParse extends Command
 
         $this->info('Inserting nations into database...');
 
-        $query = "LOAD DATA LOCAL INFILE '" . $nations_csv_file . "' INTO TABLE " . $nations_table . " FIELDS TERMINATED BY ',' ENCLOSED BY '\\\"' LINES TERMINATED BY '\\n'";
-        $cmd = 'mysql --local-infile=1 -u ' . env('DB_USERNAME') . ' -p' . env('DB_PASSWORD') . ' ' . env('DB_DATABASE') . ' -e "' . $query . '"';
+        // Delete existing database records
+        Nations::truncate();
+        Regions::truncate();
+
+        $query = "LOAD DATA LOCAL INFILE '" . $nations_csv_file . "' INTO TABLE " . $nations_table .
+            " FIELDS TERMINATED BY ',' ENCLOSED BY '\\\"' LINES TERMINATED BY '\\n'";
+        $cmd = 'mysql --local-infile=1 -u ' . env('DB_USERNAME') . ' -p' . env('DB_PASSWORD') . ' ' .
+            env('DB_DATABASE') . ' -e "' . $query . '"';
         shell_exec($cmd);
 
         LastUpdate::where('type', 'nation')->update(['type' => 'nation']);
@@ -194,8 +202,10 @@ class DailyDumpParse extends Command
 
         $this->info('Inserting regions into database... ');
 
-        $query = "LOAD DATA LOCAL INFILE '" . $regions_csv_file . "' INTO TABLE " . $regions_table . " FIELDS TERMINATED BY ',' ENCLOSED BY '\\\"' LINES TERMINATED BY '\\n'";
-        $cmd = 'mysql --local-infile=1 -u ' . env('DB_USERNAME') . ' -p' . env('DB_PASSWORD') . ' ' . env('DB_DATABASE') . ' -e "' . $query . '"';
+        $query = "LOAD DATA LOCAL INFILE '" . $regions_csv_file . "' INTO TABLE " . $regions_table .
+            " FIELDS TERMINATED BY ',' ENCLOSED BY '\\\"' LINES TERMINATED BY '\\n'";
+        $cmd = 'mysql --local-infile=1 -u ' . env('DB_USERNAME') . ' -p' . env('DB_PASSWORD') . ' ' .
+            env('DB_DATABASE') . ' -e "' . $query . '"';
         shell_exec($cmd);
 
         LastUpdate::where('type', 'region')->update(['type' => 'region']);
