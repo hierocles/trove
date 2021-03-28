@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('api:download')->timezone('America/Los_Angeles')->at('23:00')->withoutOverlapping();
-        $schedule->command('api:parse')->timezone('America/Los_Angeles')->at('23:15')->withoutOverlapping();
+        $schedule->command('api:download')->timezone('America/Los_Angeles')->dailyAt('23:00')->withoutOverlapping();
+        $schedule->command('api:parse')->timezone('America/Los_Angeles')->dailyAt('23:15')->withoutOverlapping();
     }
 }
