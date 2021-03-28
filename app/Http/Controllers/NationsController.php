@@ -137,13 +137,6 @@ class NationsController extends Controller
         // Grab values for columns region,endorsements,apiname
         $nation = Nations::where('apiname', $name)->firstorFail(['region', 'endorsements', 'unstatus']);
 
-        // Skip if not a WA member
-        if ($nation->unstatus == 'Non-member') {
-            return response()->json([
-                'error' => 'Not a WA member'
-            ], 400);
-        }
-
         // Grab value for column nations
         $region = Regions::where('name', $nation->region)->first('nations');
         $region_nations_array = explode(',', $region->nations);
