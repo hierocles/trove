@@ -25,5 +25,15 @@ class DatabaseSeeder extends Seeder
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'type' => 'region'
         ]);
+        DB::table('lastupdate')->insert([
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'type' => 'nations_download'
+        ]);
+        DB::table('lastupdate')->insert([
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'type' => 'regions_download'
+        ]);
     }
 }

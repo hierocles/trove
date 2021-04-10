@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Models\LastUpdate;
 
 class DailyDumpDownload extends Command
 {
@@ -67,6 +68,7 @@ class DailyDumpDownload extends Command
             fclose($local_file);
             fclose($remote_file);
             $this->info('Downloaded nations.xml.gz succesfully.');
+            LastUpdate::where('type', 'nations_download')->update(['type' => 'nations_download']);
         }
 
         $this->info('Downloading regions.xml.gz ... ');
@@ -81,6 +83,7 @@ class DailyDumpDownload extends Command
             }
             fclose($local_file);
             fclose($remote_file);
+            LastUpdate::where('type', 'regions_download')->update(['type' => 'regions_download']);
             $this->info('Downloaded regions.xml.gz succesfully.');
         }
 
